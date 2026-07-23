@@ -1,0 +1,238 @@
+@import "tailwindcss";
+
+/* Tailwind v4 — explicit source globs so dynamic class strings inside
+   CVA variant arrays (e.g. `before:from-cyan-400/10`) are still picked up
+   by the JIT compiler. */
+@source "../components/**/*.{ts,tsx}";
+@source "../app/**/*.{ts,tsx}";
+@source "../lib/**/*.{ts,tsx}";
+
+/* ============================================================
+   AURA — Cinematic Dark Glass Design System
+   Tailwind v4 uses the @theme directive to register design tokens.
+   ============================================================ */
+
+@theme {
+  /* ---------- Surfaces ---------- */
+  --color-aura-void: #030303;
+  --color-aura-void-2: #050507;
+  --color-aura-card: #0a0a0f;
+  --color-aura-card-2: #0c0c14;
+  --color-aura-line: #ffffff; /* referenced via /alpha in tailwind */
+
+  /* ---------- Text ---------- */
+  --color-aura-text: #e2e2e2;
+  --color-aura-muted: #6b6b7b;
+  --color-aura-dim: #4a4a55;
+
+  /* ---------- Accents ---------- */
+  --color-aura-pink: #e8a5a5;
+  --color-aura-pink-dim: #b87878;
+  --color-aura-green: #7ee787;
+  --color-aura-cyan: #67e8f9;
+  --color-aura-violet: #a78bfa;
+  --color-aura-emerald: #34d399;
+
+  /* ---------- Variance / Danger ---------- */
+  --color-aura-danger-bg: #3d1f1f;
+  --color-aura-danger-border: #5a2929;
+
+  /* ---------- Fonts (Geist) ---------- */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ============================================================
+   Base layer — typography + global background composition
+   ============================================================ */
+
+html,
+body {
+  height: 100%;
+  background: #030303;
+  color: var(--color-aura-text);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Atmospheric radial gradient — subtle, deep, cinematic. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      rgba(20, 20, 30, 0.45) 0%,
+      rgba(10, 10, 18, 0.25) 30%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 100% 100%,
+      rgba(40, 20, 60, 0.18) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 30% at 0% 80%,
+      rgba(20, 40, 50, 0.15) 0%,
+      transparent 60%
+    );
+}
+
+/* Faint noise texture overlay — gives the black depth without flattening it. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  mix-blend-mode: overlay;
+}
+
+/* Main content stays above the atmospheric layers. */
+#__aura-root {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   Utility helpers
+   ============================================================ */
+
+@utility glass-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: rgb(10 10 15 / 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+@utility glass-card-hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 40px -10px rgba(255, 255, 255, 0.03);
+}
+
+@utility text-aura-text {
+  color: var(--color-aura-text);
+}
+
+@utility text-aura-muted {
+  color: var(--color-aura-muted);
+}
+
+@utility text-aura-pink {
+  color: var(--color-aura-pink);
+}
+
+/* Subtle scrollbar that fits the dark glass theme. */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Selection */
+::selection {
+  background: rgba(232, 165, 165, 0.3);
+  color: #fff;
+}
+
+/* Focus ring — accessible, on-brand. */
+:focus-visible {
+  outline: 2px solid rgba(232, 165, 165, 0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   CrystalCore — keyframes
+   ============================================================ */
+
+@keyframes crystal-orbit-0 {
+  0% {
+    transform: rotateX(75deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(75deg) rotateZ(360deg);
+  }
+}
+
+@keyframes crystal-orbit-1 {
+  0% {
+    transform: rotateY(75deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateY(75deg) rotateZ(-360deg);
+  }
+}
+
+@keyframes crystal-orbit-2 {
+  0% {
+    transform: rotateX(60deg) rotateY(60deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(60deg) rotateY(60deg) rotateZ(360deg);
+  }
+}
+
+@keyframes crystal-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 1;
+  }
+}
+
+/* Subtle ambient drift for any element that wants it. */
+@keyframes aura-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* ============================================================
+   Reduced motion — kill the most distracting animations and
+   freeze any pseudo-element glows. Users with this preference
+   still get all the visual styling, just less kinetic.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
