@@ -1,13 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Key, Mail, Lock, User } from "lucide-react";
+import { Key, Mail, Lock, User, Loader2 } from "lucide-react";
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#030303]">
+          <Loader2 className="h-6 w-6 animate-spin text-aura-muted" />
+        </div>
+      }
+    >
+      <SignupForm />
+    </Suspense>
+  );
+}
+
+function SignupForm() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
