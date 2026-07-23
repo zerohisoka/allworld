@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Fingerprint } from "lucide-react";
+import { ArrowRight, Key } from "lucide-react";
 import * as React from "react";
 
 import { CrystalCore } from "@/components/crystal-core";
@@ -130,7 +130,7 @@ export function HeroSection() {
             size="lg"
             className="shadow-[0_0_40px_-10px_rgba(255,255,255,0.25)]"
           >
-            <Fingerprint className="h-4 w-4" />
+            <Key className="h-4 w-4" />
             Initialize Live Demo
           </NavButton>
           <a

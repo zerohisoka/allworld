@@ -1,6 +1,6 @@
 "use client";
 
-import { Fingerprint, Download, ArrowUpRight } from "lucide-react";
+import { Key, Download, ArrowUpRight } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -25,7 +25,7 @@ export function SiteNav({ className }: { className?: string }) {
           aria-label="AURA home"
         >
           <span className="flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-aura-text transition-colors group-hover:border-white/20">
-            <Fingerprint className="h-3.5 w-3.5" />
+            <Key className="h-3.5 w-3.5" />
           </span>
           <span className="text-sm font-semibold tracking-[0.2em] text-white">
             AURA

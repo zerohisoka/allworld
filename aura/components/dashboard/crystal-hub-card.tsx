@@ -6,10 +6,16 @@ import { CrystalCore } from "@/components/crystal-core";
 import { GlassCard } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
-/* Pre-defined hub nodes — color matched to the design ref.
-   On small screens we collapse down to 4 hubs (the 3 most spaced out per side)
-   to keep the labels readable. */
-const HUBS_DESKTOP = [
+type HubNode = {
+  id: string;
+  label: string;
+  sub: string;
+  x: number;
+  y: number;
+  color: string;
+};
+
+const HUBS_DESKTOP: HubNode[] = [
   { id: "noida-1", label: "Noida Branch", sub: "Node", x: 12, y: 22, color: "rgb(126,231,135)" },
   { id: "logistics-1", label: "Logistics", sub: "Node", x: 8, y: 50, color: "rgb(103,232,249)" },
   { id: "finance-1", label: "Finance", sub: "Node", x: 14, y: 78, color: "rgb(167,139,250)" },
@@ -19,16 +25,25 @@ const HUBS_DESKTOP = [
   { id: "noida-2", label: "Noida Branch", sub: "Node", x: 88, y: 92, color: "rgb(126,231,135)" },
 ];
 
-const HUBS_MOBILE = [
+const HUBS_MOBILE: HubNode[] = [
   { id: "noida-1", label: "Noida", sub: "Node", x: 10, y: 28, color: "rgb(126,231,135)" },
   { id: "logistics-1", label: "Logistics", sub: "Node", x: 6, y: 70, color: "rgb(103,232,249)" },
   { id: "logistics-2", label: "Logistics", sub: "Node", x: 90, y: 32, color: "rgb(167,139,250)" },
   { id: "finance-1", label: "Finance", sub: "Node", x: 94, y: 72, color: "rgb(126,231,135)" },
 ];
 
+/** Color palette for hub nodes — cycles through the brand colors */
+const COLORS = [
+  "rgb(126,231,135)", // emerald
+  "rgb(103,232,249)", // cyan
+  "rgb(167,139,250)", // violet
+  "rgb(232,165,165)", // pink
+];
+
 export function CrystalHubCard() {
-  // SSR-safe default; the actual media query effect below swaps it on the client.
   const [isMobile, setIsMobile] = React.useState(false);
+  const [branchNodes, setBranchNodes] = React.useState<HubNode[] | null>(null);
+  const [nodeCount, setNodeCount] = React.useState(7);
 
   React.useEffect(() => {
     const mq = window.matchMedia("(max-width: 640px)");
@@ -38,7 +53,44 @@ export function CrystalHubCard() {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  const HUBS = isMobile ? HUBS_MOBILE : HUBS_DESKTOP;
+  // Fetch real branches from the dashboard data API
+  React.useEffect(() => {
+    fetch("/api/dashboard/data")
+      .then((r) => r.json())
+      .then((data) => {
+        const branches = data.branches || [];
+        setNodeCount(branches.length || 7);
+
+        if (branches.length > 0) {
+          // Build hub nodes from real branches, distributing around the crystal
+          const nodes: HubNode[] = branches.map((b: any, i: number) => {
+            const isLeft = i < Math.ceil(branches.length / 2);
+            const sideBranches = isLeft
+              ? branches.slice(0, Math.ceil(branches.length / 2))
+              : branches.slice(Math.ceil(branches.length / 2));
+            const sideIdx = isLeft ? i : i - Math.ceil(branches.length / 2);
+            const totalOnSide = sideBranches.length;
+
+            // Distribute nodes vertically on each side
+            const yStep = totalOnSide > 1 ? 65 / (totalOnSide - 1) : 0;
+            const y = isLeft ? 18 + sideIdx * yStep : 18 + sideIdx * yStep;
+
+            return {
+              id: b.id,
+              label: b.name,
+              sub: b.region || "Node",
+              x: isLeft ? 10 : 90,
+              y: Math.round(y),
+              color: COLORS[i % COLORS.length],
+            };
+          });
+          setBranchNodes(nodes);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const HUBS = branchNodes ?? (isMobile ? HUBS_MOBILE : HUBS_DESKTOP);
 
   return (
     <GlassCard padding="md" className="relative flex flex-col overflow-hidden">
@@ -184,7 +236,7 @@ export function CrystalHubCard() {
         </div>
         <div className="flex items-center gap-3 text-aura-muted">
           <span>
-            <span className="text-white">7</span> nodes
+            <span className="text-white">{nodeCount}</span> nodes
           </span>
           <span>
             <span className="text-emerald-300">99.97%</span> uptime

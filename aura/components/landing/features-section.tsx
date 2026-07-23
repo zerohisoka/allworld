@@ -76,9 +76,10 @@ export function FeaturesSection() {
           <span className="text-aura-muted">Four guarantees.</span>
         </h2>
         <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-aura-muted">
-          AURA runs locally, on your infrastructure. The local-first design
-          means your data never leaves the network, and the audit pipeline
-          stays under your control end-to-end.
+          AURA is a hosted multi-tenant SaaS with per-organization row-level
+          isolation. Your data is encrypted at rest and in transit, and each
+          organization&apos;s branches, employees, and flags are walled off
+          from every other tenant.
         </p>
       </div>
 
