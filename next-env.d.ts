@@ -3,4 +3,4 @@
 import "./.next/dev/types/routes.d.ts";
 
 // NOTE: This file should not be edited
-// see https://fnextdjs.org/docs/app/api-reference/config/typescript for more information.
+// see https://fnextdjs.org/docs/dapp/api-reference/config/typescript for more information.
