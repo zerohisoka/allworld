@@ -1,7 +1,8 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { CreditCard, CheckCircle, Calendar, ArrowUpRight } from "lucide-react";
+import { CreditCard, CheckCircle, Calendar, ArrowUpRight, Loader2 } from "lucide-react";
+import { Suspense } from "react";
 import * as React from "react";
 
 import { GlassCard, ProgressBar } from "@/components/ui";
@@ -9,6 +10,20 @@ import { createClient } from "@/lib/supabase/client";
 import { PLANS, getPlanLimits, type PlanId } from "@/lib/dodo/plans";
 
 export default function BillingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-6 w-6 animate-spin text-aura-muted" />
+        </div>
+      }
+    >
+      <BillingContent />
+    </Suspense>
+  );
+}
+
+function BillingContent() {
   const searchParams = useSearchParams();
   const success = searchParams?.get("success");
 
