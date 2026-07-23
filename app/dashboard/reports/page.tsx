@@ -58,14 +58,14 @@ export default function ReportsPage() {
       if (!user) return;
 
       // Fetch orgs
-      const { data: memberships } = await supabase
+      const { data: memberships } = await (supabase
         .from("org_members")
         .select("org_id, role, organizations(name)")
-        .eq("user_id", user.id);
+        .eq("user_id", user.id) as any);
 
       if (memberships) {
-        const orgInfo: OrgInfo[] = memberships.map((m) => {
-          const org = m.organizations as unknown as { name: string };
+        const orgInfo: OrgInfo[] = memberships.map((m: any) => {
+          const org = m.organizations as { name: string };
           return {
             org_id: m.org_id,
             org_name: org?.name || "",

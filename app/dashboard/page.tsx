@@ -67,14 +67,14 @@ export default function DashboardPage() {
           setUser(profile);
 
           // Fetch org memberships
-          const { data: memberships } = await supabase
+          const { data: memberships } = await (supabase
             .from("org_members")
             .select("id, org_id, role, organizations(name)")
-            .eq("user_id", authUser.id);
+            .eq("user_id", authUser.id) as any);
 
           if (memberships) {
-            const mappedOrgs: OrgMembership[] = memberships.map((m) => {
-              const org = m.organizations as unknown as { name: string };
+            const mappedOrgs: OrgMembership[] = memberships.map((m: any) => {
+              const org = m.organizations as { name: string };
               return {
                 id: m.id,
                 org_id: m.org_id,

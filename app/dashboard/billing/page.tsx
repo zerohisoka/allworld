@@ -36,14 +36,14 @@ export default function BillingPage() {
       if (!user) return;
 
       // Fetch org + subscription
-      const { data: memberships } = await supabase
+      const { data: memberships } = await (supabase
         .from("org_members")
         .select("org_id, organizations(*)")
         .eq("user_id", user.id)
-        .single();
+        .single() as any);
 
       if (memberships) {
-        const orgData = memberships.organizations as unknown as {
+        const orgData = memberships.organizations as {
           id: string;
           name: string;
           plan_tier: string;
@@ -55,11 +55,11 @@ export default function BillingPage() {
           plan_tier: orgData.plan_tier,
         });
 
-        const { data: sub } = await supabase
+        const { data: sub } = await (supabase
           .from("subscriptions")
           .select("*")
           .eq("org_id", orgData.id)
-          .single();
+          .single() as any);
 
         setSubscription(sub);
       }

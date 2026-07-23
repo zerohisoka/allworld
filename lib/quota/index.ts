@@ -24,11 +24,11 @@ export async function checkQuota(
   const supabase = await createClient();
 
   // Get org plan
-  const { data: org } = await supabase
+  const { data: org } = await (supabase
     .from("organizations")
     .select("plan_tier")
     .eq("id", orgId)
-    .single();
+    .single() as any);
 
   const plan = org?.plan_tier || "free";
   const limits = getPlanLimits(plan);
